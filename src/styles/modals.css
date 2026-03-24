@@ -1,0 +1,1375 @@
+/**
+ * 🎭 MODALS CSS - VERSION PROPRE
+ * Mobile-first, responsive, cohérent
+ */
+
+/* ============================================
+   🔒 BLOCAGE SCROLL BODY
+   ============================================ */
+body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+/* ============================================
+   🌐 MODAL OVERLAY
+   ============================================ */
+.modern-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0; /* ✅ 50px haut/bas sur mobile */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    visibility: hidden;
+}
+
+.modern-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ============================================
+   📱 MODAL CONTAINER - MOBILE FIRST
+   ============================================ */
+.modern-modal-container {
+    width: 100%;
+    max-width: 500px; /* ✅ Max 500px pour tous les écrans */
+    height: 100%;
+    max-height: 100%; /* ✅ Prend toute la hauteur disponible (avec padding 50px) */
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+    margin: 0 auto;
+    visibility: hidden;
+}
+
+.modern-modal-container.show {
+    transform: scale(1);
+    visibility: visible;
+}
+
+/* ============================================
+   📄 CONTENU MODAL
+   ============================================ */
+.modern-modal-content {
+    background: linear-gradient(
+        135deg, 
+        rgba(20, 20, 30, 0.95) 0%, 
+        rgba(15, 15, 25, 0.98) 100%
+    );
+    border-radius: 24px; /* ✅ 4 coins arrondis sur mobile */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+/* ============================================
+   ❌ BOUTON FERMER FAB
+   ============================================ */
+.modern-close-fab {
+    position: fixed;
+    top: calc(50px + 16px);
+    right: 16px;
+    width: 56px;
+    height: 56px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 0; /* ✅ AJOUTER - cache le texte brut */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 100002;
+    overflow: hidden; /* ✅ AJOUTER */
+}
+
+.modern-close-fab svg {
+    font-size: initial; /* ✅ AJOUTER - réactive pour le SVG */
+    width: 20px;
+    height: 20px;
+}
+
+/* ============================================
+   💾 BOUTON SAVE FLOTTANT
+   ============================================ */
+.modern-submit-mini {
+    position: fixed;
+    bottom: calc(50px + 16px);
+    right: 16px;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 0; /* ✅ AJOUTER - cache le texte brut */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(102, 126, 234, 0.3);
+    z-index: 100001;
+    overflow: hidden; /* ✅ AJOUTER */
+}
+
+.modern-submit-mini svg {
+    font-size: initial; /* ✅ AJOUTER */
+    width: 20px;
+    height: 20px;
+}
+
+.modern-submit-mini:hover {
+    transform: scale(1.1);
+}
+
+.modern-submit-mini:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.fab-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.fab-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ============================================
+   🖼️ BANNIÈRE PHOTO
+   ============================================ */
+.banner-photo-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 24px 24px 0 0; /* ✅ Coins haut arrondis */
+}
+
+.banner-photo {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.banner-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.placeholder-icon {
+    font-size: 48px;
+    opacity: 0.5;
+}
+
+.banner-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-photo-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s ease;
+}
+
+.banner-photo-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.banner-title {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    z-index: 1;
+    text-align: center; 
+    max-width: 90%;
+}
+
+.public-section {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: left !important; /* ✅ Force sur la section */
+}
+
+.banner-title {
+    text-align: center !important; 
+}
+
+/* ============================================
+   📝 CONTENU FORMULAIRE SCROLLABLE
+   ============================================ */
+.modern-form-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem 1rem;
+    padding-bottom: 100px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.modern-form-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modern-form-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.modern-form-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+/* ============================================
+   🎨 CHAMPS FORMULAIRE
+   ============================================ */
+.modern-field-container {
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.modern-icon-field,
+.modern-textarea-field,
+.modern-select-field {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.modern-textarea-field {
+    align-items: flex-start;
+}
+
+.modern-icon-field:focus-within,
+.modern-textarea-field:focus-within,
+.modern-select-field:focus-within {
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(102, 126, 234, 0.08);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.field-icon {
+    font-size: 20px;
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    opacity: 0.7;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.field-icon svg {
+    display: block;
+    opacity: 0.7;
+}
+
+.modern-field-input {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.modern-field-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Textarea */
+textarea.modern-field-input {
+    min-height: 80px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* Select personnalisé */
+select.modern-field-input {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* Options select avec fond sombre */
+select.modern-field-input option {
+    background: #1a1a24;
+    color: #ffffff;
+    padding: 12px;
+}
+
+/* ============================================
+   📱 RÉSEAUX SOCIAUX
+   ============================================ */
+.modern-social-grid {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.modern-social-field {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    transition: all 0.3s ease;
+}
+
+.modern-social-field:focus-within {
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.social-icon svg {
+    display: block;
+}
+
+.modern-social-input {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+}
+
+.modern-social-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+}
+
+/* ============================================
+   ▶️ YOUTUBE
+   ============================================ */
+.modern-youtube-container {
+    margin: 16px 0;
+}
+
+.youtube-field-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.youtube-field-group .modern-field-container {
+    flex: 1;
+    margin-bottom: 0;  /* ✅ Enlever la marge pour éviter l'espacement */
+}
+
+/* Bouton + (ajouter) */
+.youtube-add-btn {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    color: #ff0000;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.youtube-add-btn:hover {
+    background: rgba(255, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Bouton - (supprimer) */
+.youtube-remove-btn {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.youtube-remove-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: scale(1.05);
+}
+
+.youtube-remove-btn svg,
+.youtube-add-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ============================================
+   ✅ VALIDATION
+   ============================================ */
+.field-validation {
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.validation-icon {
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.field-valid {
+    border-color: rgba(16, 185, 129, 0.3) !important;
+    background: rgba(16, 185, 129, 0.05) !important;
+}
+
+.field-error {
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    background: rgba(239, 68, 68, 0.08) !important;
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+/* ============================================
+   ⚡ ANIMATION SPINNER
+   ============================================ */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   💡 HELPERS
+   ============================================ */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.modern-field-notice {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.modern-field-notice small {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+}
+
+/* ============================================
+   📄 MODAUX PUBLICS - FICHES CONSULTATION
+   ============================================ */
+
+/* Container principal */
+.public-modal-content {
+    padding: 0;
+}
+
+/* Bouton retour événement */
+.btn-back-to-event {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    color: #667eea;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin: 0 1rem 1rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-back-to-event:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: translateX(-4px);
+}
+
+.btn-back-to-event svg {
+    flex-shrink: 0;
+}
+
+/* Sections */
+.public-section {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.public-section:last-child {
+    border-bottom: none;
+}
+
+.public-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 1rem 0;
+}
+
+.public-section-title svg {
+    opacity: 0.7;
+}
+
+/* Grille d'informations */
+.public-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.public-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.public-info-item.clickable {
+    cursor: pointer;
+}
+
+.public-info-item.clickable:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateX(4px);
+}
+
+.info-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.info-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+}
+
+.info-link {
+    color: #667eea;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.info-link:hover {
+    color: #8b9dff;
+    text-decoration: underline;
+}
+
+.info-link svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+/* Description */
+.public-description {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    white-space: pre-wrap;
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+.public-description::first-line {
+    text-align: left !important;
+}
+
+/* Contact grid */
+.public-contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(4px);
+}
+
+.contact-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.contact-value {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* Liens réseaux sociaux */
+.public-social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.social-link:hover {
+    transform: translateX(4px);
+}
+
+.social-link svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.social-link span {
+    font-size: 15px;
+}
+
+/* Couleurs spécifiques réseaux */
+.social-link.facebook:hover {
+    background: rgba(24, 119, 242, 0.1);
+    border-color: rgba(24, 119, 242, 0.3);
+}
+
+.social-link.instagram:hover {
+    background: rgba(225, 48, 108, 0.1);
+    border-color: rgba(225, 48, 108, 0.3);
+}
+
+.social-link.bandcamp:hover {
+    background: rgba(98, 154, 169, 0.1);
+    border-color: rgba(98, 154, 169, 0.3);
+}
+
+.social-link.helloasso:hover {
+    background: rgba(73, 197, 177, 0.1);
+    border-color: rgba(73, 197, 177, 0.3);
+}
+
+/* YouTube embeds */
+.public-youtube-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.public-youtube-grid.single {
+    grid-template-columns: 1fr;
+}
+
+.public-youtube-grid.double {
+    grid-template-columns: 1fr;
+}
+
+.public-youtube-grid.triple {
+    grid-template-columns: 1fr;
+}
+
+.youtube-embed {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.youtube-embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+}
+
+/* ============================================
+   🚫 EMPÊCHER DÉBORDEMENT SVG/CODE
+   ============================================ */
+.modern-modal-overlay,
+.modern-modal-container,
+.modern-modal-content {
+    overflow: hidden !important;
+}
+
+/* Cache tout contenu en dehors du modal */
+body.modal-open > *:not(.modern-modal-overlay) {
+    visibility: hidden !important;
+}
+
+.modern-modal-overlay {
+    visibility: visible !important;
+}
+
+/* ============================================
+   📱 RESPONSIVE YOUTUBE
+   ============================================ */
+
+/* Tablette */
+@media (min-width: 768px) {
+    .public-youtube-grid.double {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .public-youtube-grid.triple {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .public-youtube-grid.triple {
+        grid-template-columns: repeat(3, 1fr);
+    }    
+    
+    .public-social-links {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+/* ============================================
+   🎨 ANIMATIONS
+   ============================================ */
+
+.public-info-item,
+.contact-item,
+.social-link {
+    animation: fadeInUp 0.4s ease-out backwards;
+}
+
+.public-info-item:nth-child(1) { animation-delay: 0.05s; }
+.public-info-item:nth-child(2) { animation-delay: 0.1s; }
+.public-info-item:nth-child(3) { animation-delay: 0.15s; }
+.public-info-item:nth-child(4) { animation-delay: 0.2s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   🏠 ADDRESS AUTOCOMPLETE SUGGESTIONS
+   ============================================ */
+.address-suggestions-container {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.98) 0%, rgba(15, 15, 25, 0.99) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 10000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(102, 126, 234, 0.2);
+    width: 100%;
+    margin-top: 8px;
+    display: none;  /* ← Par défaut caché */
+}
+
+/* Montrer le dropdown quand il a du contenu */
+.address-suggestions-container.show {
+    display: block;
+}
+
+/* Scrollbar styling */
+.address-suggestions-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.address-suggestions-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.address-suggestions-container::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 3px;
+}
+
+.address-suggestions-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
+}
+
+/* Items du dropdown */
+.suggestion-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: rgba(102, 126, 234, 0.15);
+    transform: translateX(4px);
+}
+
+/* Texte principal */
+.suggestion-item > div:first-child {
+    font-weight: 500;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Texte secondaire (département) */
+.suggestion-item > div:last-child {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 6px;
+    line-height: 1.3;
+}
+
+/* Messages d'erreur/pas de résultats */
+.suggestion-no-results,
+.suggestion-error {
+    padding: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.suggestion-no-results {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.suggestion-error {
+    color: #ef4444;
+}
+
+/* ============================================
+   📋 VALIDATION INDICATEURS (Requis vs Optionnel)
+   ============================================ */
+
+/* Badge rouge (requis, non rempli) */
+.field-required-badge {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    margin-left: 6px;
+    animation: pulse-red 2s ease-in-out infinite;
+}
+
+/* Badge vert (requis, rempli) */
+.field-completed-badge {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    margin-left: 6px;
+}
+
+@keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   👥 SELECT "ATTRIBUER À UN ORGANISATEUR"
+   ============================================ */
+
+/* Même style que les autres selects */
+.modern-select-field select[name="owner_for_organizer"],
+.modern-select-field select[name="role"] {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+select option {
+    background: #1a1a24;
+    color: #ffffff;
+    padding: 12px;
+}
+
+select option:checked {
+    background: rgba(102, 126, 234, 0.3);
+    color: #ffffff;
+}
+
+/* Suggestion item text styling */
+.suggestion-item > div:first-child {
+    font-weight: 500;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.suggestion-item > div:last-child {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 6px;
+    line-height: 1.3;
+}
+
+/* No results message */
+.suggestion-no-results {
+    padding: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Error message */
+.suggestion-error {
+    padding: 16px;
+    color: #ef4444;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* ============================================
+   📱 TABLETTE MAIS PETIT EN HAUTEUR (768px-1023px LARGE + <800px HAUT)
+   Comportement comme desktop : 4 coins arrondis + espace haut/bas
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) and (max-height: 799px) {
+    .modern-modal-overlay {
+        padding: 2rem 0; /* ✅ Espace haut/bas */
+        align-items: center;
+    }
+
+    .modern-modal-container {
+        max-width: 500px;
+        height: auto;
+        max-height: calc(100vh - 4rem);
+    }
+
+    .modern-modal-content {
+        border-radius: 24px; /* ✅ 4 coins arrondis */
+    }
+
+    .banner-photo-container {
+        height: 200px;
+    }
+
+    .modern-form-content {
+        padding: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .modern-close-fab {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .modern-submit-mini {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* ============================================
+   🖥️ DESKTOP (≥ 1024px)
+   ============================================ */
+@media (min-width: 1024px) {
+    .modern-modal-overlay {
+        padding: 2rem; /* ✅ Padding normal desktop */
+        align-items: center;
+    }
+
+    .modern-modal-container {
+        max-width: 500px;
+        height: auto;
+        max-height: 90vh;
+    }
+
+    .modern-modal-content {
+        border-radius: 24px; /* ✅ 4 coins arrondis */
+    }
+
+    .banner-photo-container {
+        height: 28
+        200px;
+    }
+
+    .modern-form-content {
+        padding: 2.5rem 3rem;
+        padding-bottom: 2rem;
+    }
+
+    /* ✅ Boutons en position absolue */
+    .modern-close-fab {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .modern-submit-mini {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* ============================================
+   📏 NEST HUB (1024x600) - CAS SPÉCIAL
+   ============================================ */
+@media (width: 1024px) and (height: 600px) {
+    .modern-modal-overlay {
+        padding: 1rem 0;
+    }
+
+    .modern-modal-container {
+        max-height: calc(100vh - 2rem);
+    }
+
+    .banner-photo-container {
+        height: 180px;
+    }
+
+    .modern-form-content {
+        padding: 1.5rem 2rem;
+    }
+
+    .modern-close-fab {
+        top: calc(1rem + 12px);
+        width: 48px;
+        height: 48px;
+    }
+
+    .modern-submit-mini {
+        bottom: calc(1rem + 12px);
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* ============================================
+   📱 TABLETTE PORTRAIT (768px-1023px LARGE + ≥800px HAUT)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) and (min-height: 800px) {
+    .modern-modal-overlay {
+        padding: 50px 0 50px 0; /* ✅ CHANGEMENT : 50px haut ET bas */
+        align-items: flex-start;
+    }
+
+    .modern-modal-container {
+        height: auto; /* ✅ CHANGEMENT : hauteur auto */
+        max-height: calc(100vh - 100px); /* ✅ CHANGEMENT : 50px haut + 50px bas */
+    }
+
+    .modern-modal-content {
+        border-radius: 24px; /* ✅ CHANGEMENT : 4 coins arrondis */
+    }
+
+    .banner-photo-container {
+        height: 240px;
+    }
+
+    .modern-form-content {
+        padding: 2rem;
+        padding-bottom: 2rem; /* ✅ CHANGEMENT : pas d'espace extra */
+    }
+
+    .modern-close-fab {
+        position: absolute; /* ✅ CHANGEMENT : absolu par rapport au modal */
+        top: 20px;
+        right: 20px;
+    }
+
+    .modern-submit-mini {
+        position: absolute; /* ✅ CHANGEMENT : absolu par rapport au modal */
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* ============================================
+   📱 SURFACE PRO / ZENBOOK (912px-1023px LARGE)
+   ============================================ */
+@media (min-width: 912px) and (max-width: 1023px) {
+    .modern-modal-overlay {
+        padding: 50px 0; /* ✅ 50px haut/bas */
+        align-items: center;
+    }
+
+    .modern-modal-container {
+        max-height: calc(100vh - 100px);
+    }
+
+    .modern-modal-content {
+        border-radius: 24px;
+    }
+
+    .modern-close-fab {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .modern-submit-mini {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* ============================================
+   🖥️ DESKTOP ET IPAD PRO (≥ 1024px)
+   ============================================ */
+@media (min-width: 1024px) {
+    .modern-modal-overlay {
+        padding: 50px 0; /* ✅ CHANGEMENT : 50px au lieu de 2rem */
+        align-items: center;
+    }
+
+    .modern-modal-container {
+        max-width: 500px;
+        height: auto;
+        max-height: calc(100vh - 100px); /* ✅ CHANGEMENT : 50px haut + 50px bas */
+    }
+
+    .modern-modal-content {
+        border-radius: 24px;
+    }
+
+    .banner-photo-container {
+        height: 200px;
+    }
+
+    .modern-form-content {
+        padding: 2.5rem 3rem;
+        padding-bottom: 2rem;
+    }
+
+    .modern-close-fab {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .modern-submit-mini {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* ============================================
+   📏 TRÈS PETITS ÉCRANS HAUTEUR (≤700px)
+   ============================================ */
+@media (max-height: 700px) and (max-width: 767px) {
+    /* ✅ Seulement pour mobile */
+    .modern-modal-overlay {
+        padding: 20px 0;
+    }
+
+    .banner-photo-container {
+        height: 150px;
+    }
+
+    .modern-form-content {
+        padding: 1rem;
+    }
+
+    .modern-close-fab {
+        top: calc(20px + 12px);
+    }
+
+    .modern-submit-mini {
+        bottom: calc(20px + 12px);
+    }
+}
+
+@media (max-height: 600px) and (max-width: 767px) {
+    .modern-modal-overlay {
+        padding: 10px 0;
+    }
+
+    .banner-photo-container {
+        height: 120px;
+    }
+
+    .modern-close-fab {
+        top: calc(10px + 12px);
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+
+    .modern-submit-mini {
+        bottom: calc(10px + 12px);
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+}

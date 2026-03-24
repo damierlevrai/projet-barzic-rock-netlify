@@ -1,0 +1,56 @@
+{
+  "name": "Barzik - Agenda Music Live",
+  "short_name": "Barzik",
+  "description": "Découvrez les événements rock, concerts et spectacles près de chez vous",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "categories": ["music", "entertainment", "lifestyle"],
+  
+  
+  "shortcuts": [
+    {
+      "name": "Événements publics",
+      "short_name": "Événements",
+      "description": "Voir tous les événements disponibles",
+      "url": "/public",
+      "icons": [
+        
+      ]
+    },
+    {
+      "name": "Mon espace",
+      "short_name": "Dashboard",
+      "description": "Accéder à mon espace organisateur",
+      "url": "/orga",
+      "icons": [
+        
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}

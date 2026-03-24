@@ -1,0 +1,192 @@
+[
+  {
+    "schemaname": "public",
+    "tablename": "profiles",
+    "policyname": "users_view_own_profile",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "SELECT",
+    "qual": "(auth.uid() = id)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "profiles",
+    "policyname": "users_update_own_profile",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "UPDATE",
+    "qual": "(auth.uid() = id)",
+    "with_check": "(auth.uid() = id)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "profiles",
+    "policyname": "admin_view_all_profiles",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "SELECT",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "profiles",
+    "policyname": "admin_update_profiles",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "UPDATE",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "establishment",
+    "policyname": "public_view_approved_establishments",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "SELECT",
+    "qual": "(status = 'approved'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "establishment",
+    "policyname": "orga_create_establishments",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "INSERT",
+    "qual": null,
+    "with_check": "((auth.uid() = owner_id) AND (status = 'pending'::text) AND (((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = ANY (ARRAY['organizer'::text, 'admin'::text])))"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "establishment",
+    "policyname": "admin_view_all_establishments",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "SELECT",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "establishment",
+    "policyname": "admin_update_establishments",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "UPDATE",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "establishment",
+    "policyname": "admin_insert_establishments",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "INSERT",
+    "qual": null,
+    "with_check": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "establishment",
+    "policyname": "admin_delete_establishments",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "DELETE",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "event",
+    "policyname": "public_view_approved_events",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "SELECT",
+    "qual": "(status = 'approved'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "event",
+    "policyname": "admin_view_all_events",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "SELECT",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "event",
+    "policyname": "admin_update_events",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "UPDATE",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "event",
+    "policyname": "admin_insert_events",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "INSERT",
+    "qual": null,
+    "with_check": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "event",
+    "policyname": "admin_delete_events",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "DELETE",
+    "qual": "(((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = 'admin'::text)",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "app_metadata",
+    "policyname": "everyone_read_metadata",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "SELECT",
+    "qual": "true",
+    "with_check": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "establishment",
+    "policyname": "orga_update_own_establishments",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "UPDATE",
+    "qual": "((auth.uid() = owner_id) AND (status = ANY (ARRAY['pending'::text, 'approved'::text])))",
+    "with_check": "((auth.uid() = owner_id) AND (status = 'pending'::text))"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "event",
+    "policyname": "orga_create_events",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "INSERT",
+    "qual": null,
+    "with_check": "((auth.uid() = owner_id) AND (status = 'pending'::text) AND (((auth.jwt() -> 'user_metadata'::text) ->> 'role'::text) = ANY (ARRAY['organizer'::text, 'admin'::text])))"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "event",
+    "policyname": "orga_update_own_events",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "UPDATE",
+    "qual": "((auth.uid() = owner_id) AND (status = ANY (ARRAY['pending'::text, 'approved'::text])))",
+    "with_check": "((auth.uid() = owner_id) AND (status = 'pending'::text))"
+  }
+]

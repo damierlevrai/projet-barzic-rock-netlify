@@ -1,0 +1,21 @@
+{
+  "name": "bz-rock",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "clean-css": "csso public/css/main.css --output public/css/main.clean.css",
+    "purge-css": "purgecss --css public/css/main.css --content index.html src/**/*.js --output public/css"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.58.0"
+  },
+  "devDependencies": {
+    "csso-cli": "^3.0.0",
+    "purgecss": "^5.0.0",
+    "vite": "^5.4.20"
+  }
+}
