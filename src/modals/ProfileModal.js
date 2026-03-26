@@ -49,7 +49,22 @@ async open(profile = null) {
     console.log(`👥 ProfileModal: ${this.isAdminContext ? 'Admin' : 'Organizer'} - ${this.isEdit ? 'Édition' : 'Création'}`);
 
     await super.open(profile);
-    this.applyRoleColorToHeader();
+this.applyRoleColorToHeader();
+
+// 🔑 Anti-autofill browser sur les champs password
+if (this.isEditingOwnAccount) {
+  [100, 300, 600].forEach(delay => {
+    setTimeout(() => {
+      ['new_password', 'confirm_password'].forEach(id => {
+        const el = document.getElementById(`${this.modalId}-${id}`);
+        if (el) {
+          el.value = '';
+          el.setAttribute('autocomplete', 'off');
+        }
+      });
+    }, delay);
+  });
+}
 
     // ✅ Listener formatage téléphone
     const telInput = document.querySelector('input[id="telephone"]');
@@ -285,19 +300,19 @@ return fields;
           </h4>
           
           ${this.createFormField({
-  id: 'current_password',
+  id: 'new_password',
   type: 'password',
   value: '',
-  placeholder: 'Mot de passe actuel',
+  placeholder: 'Nouveau mot de passe',
   validation: 'optional',
   autocomplete: 'new-password'
 })}
 
 ${this.createFormField({
-  id: 'new_password',
+  id: 'confirm_password',
   type: 'password',
   value: '',
-  placeholder: 'Nouveau mot de passe',
+  placeholder: 'Confirmer le nouveau mot de passe',
   validation: 'optional',
   autocomplete: 'new-password'
 })}
@@ -331,17 +346,13 @@ ${this.createFormField({
       prepared.password = data.password; // Pour la Edge Function
     }
 
-    // ORGA: gestion du changement de password
     if (this.isEditingOwnAccount) {
-  const currentPass = document.getElementById(`${this.modalId}-current_password`)?.value?.trim() || '';
   const newPass = document.getElementById(`${this.modalId}-new_password`)?.value?.trim() || '';
   const confirmPass = document.getElementById(`${this.modalId}-confirm_password`)?.value?.trim() || '';
 
-  console.log('🔑 Password fields (par ID):', { currentPass: !!currentPass, newPass: !!newPass, confirmPass: !!confirmPass });
-
-  if (currentPass || newPass || confirmPass) {
-    if (!currentPass || !newPass || !confirmPass) {
-      throw new Error('Tous les champs de mot de passe sont obligatoires');
+  if (newPass || confirmPass) {
+    if (!newPass || !confirmPass) {
+      throw new Error('Les deux champs de mot de passe sont obligatoires');
     }
     if (newPass !== confirmPass) {
       throw new Error('Les mots de passe ne correspondent pas');
@@ -350,7 +361,6 @@ ${this.createFormField({
       throw new Error('Le mot de passe doit avoir au moins 8 caractères');
     }
     prepared.changePassword = {
-      currentPassword: currentPass,
       newPassword: newPass
     };
   }
@@ -503,7 +513,15 @@ console.log('[AUTH] Invoke retourné, attente réponse...');
 const { data: result, error } = await invokePromise;
 
 console.log('[AUTH] Invoke terminé !');
-console.log('[AUTH] Response error:', error);
+if (error) {
+  // Lire le body de l'erreur pour avoir le vrai message
+  try {
+    const errBody = await error.context?.json?.();
+    console.log('[AUTH] Error body:', errBody);
+  } catch(e) {
+    console.log('[AUTH] Response error (raw):', error);
+  }
+}
 console.log('[AUTH] Response data:', result);
 console.log('[AUTH] Response data type:', typeof result);
 console.log('[AUTH] Response data keys:', result ? Object.keys(result) : 'null');

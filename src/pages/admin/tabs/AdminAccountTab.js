@@ -507,20 +507,14 @@ getGeneratedAvatarHTML(account) {
         const estabCount = establishments.length;
 
         // NOUVEAU : Demander la raison
-        const adminReason = prompt(
-            `SUPPRESSION DE COMPTE\n\n` +
-            `Compte : ${displayName}\n` +
-            `Email : ${account.email}\n` +
-            `Etablissements : ${estabCount}\n\n` +
-            `Raison de la suppression ?\n` +
-            `(ex: Compte fake, violation regles, demande utilisateur, etc.)\n\n` +
-            `Laissez vide si pas de raison particuliere.`
-        );
+        const confirmed = confirm(
+    `Supprimer le compte ${displayName} (${account.email}) ?\n\nCette action est irréversible.`
+);
 
-        if (adminReason === null) {
-            this.dashboard.showNotification('Suppression annulee', 'info');
-            return;
-        }
+if (!confirmed) {
+    this.dashboard.showNotification('Suppression annulée', 'info');
+    return;
+}
 
         // NOUVEAU : Confirmation finale avec raison
         const confirmText = `SUPPRIMER ${displayName.toUpperCase()}`;
@@ -568,22 +562,23 @@ console.log('userId:', accountId);
 console.log('Raison:', adminReason);
 
 // 🆕 RÉCUPÉRER LE TOKEN
+console.log('🔑 Récupération session...');
 const { data: { session } } = await window.supabaseInstance.auth.getSession();
+console.log('🔑 Session token:', session?.access_token ? 'OK' : 'MANQUANT');
 
+console.log('🚀 Invoke delete-user-account...');
 const { data, error } = await window.supabaseInstance.functions.invoke('delete-user-account', {
     body: {
-        userId: accountId,
-        deletion_admin_reason: adminReason || null,
-        deletion_approved_at: new Date().toISOString()
-    },
-    // 🆕 AJOUTER LE TOKEN
+    userId: accountId,
+    deletion_approved_at: new Date().toISOString()
+},
     headers: {
         'Authorization': `Bearer ${session?.access_token}`
     }
 });
 
-console.log('Response error:', error);
-console.log('Response data:', data);
+console.log('✅ Response error:', error);
+console.log('✅ Response data:', data);
 
 if (error) {
     throw new Error(error.message || 'Erreur suppression compte');
