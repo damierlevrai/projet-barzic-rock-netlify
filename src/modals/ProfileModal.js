@@ -159,34 +159,14 @@ if (this.isAdminContext && this.isEdit && !this.isEditingOwnAccount) {
     `
   });
 }
-if (this.isEditingOwnAccount && this.isAdminContext) {
+if (this.isEditingOwnAccount) {
   fields.push({
     id: 'change-password',
     type: 'custom',
     renderer: () => this.createPasswordChangeSection()
   });
 }
-    // ORGA: gestion du changement de password
-if (this.isEditingOwnAccount) {
-  const currentPass = data.current_password?.trim();
-  const newPass = data.new_password?.trim();
-  const confirmPass = data.confirm_password?.trim();
-
-  // ✅ Si AU MOINS UN champ rempli, tous obligatoires
-  if (currentPass || newPass || confirmPass) {
-    if (!currentPass) throw new Error('Mot de passe actuel obligatoire');
-    if (!newPass) throw new Error('Nouveau mot de passe obligatoire');
-    if (!confirmPass) throw new Error('Confirmation obligatoire');
-    if (newPass !== confirmPass) throw new Error('Les mots de passe ne correspondent pas');
-    if (newPass.length < 8) throw new Error('Min 8 caractères');
-    
-    prepared.changePassword = {
-      currentPassword: currentPass,
-      newPassword: newPass
-    };
-  }
-}
-return fields; 
+return fields;
 
 } 
 
@@ -211,12 +191,30 @@ return fields;
     return config;
   }
 
+  validateForm() {
+    const config = this.getValidationConfig()
+      .filter(c => {
+        // En édition, l'email est disabled → pas à valider
+        if (c.id === 'email' && this.isEdit) return false;
+        return true;
+      });
+
+    let isValid = true;
+    config.forEach(fieldConfig => {
+      if (!this.validateField(fieldConfig)) {
+        isValid = false;
+      }
+    });
+
+    return isValid;
+  }
+
   applyRoleColorToHeader() {
     const headerEl = this.modalElement?.querySelector('.banner-photo-container');
     if (!headerEl) return;
     
     // Déterminer le rôle : du profile en édition OU du user connecté en création
-    const role = this.currentData?.role || this.getCurrentUser()?.role;
+    const role = this.currentData?.role || Auth.getCurrentUser()?.role;
     
     const roleColors = {
         'admin': '#667eea',      // Purple
