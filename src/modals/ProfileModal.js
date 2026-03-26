@@ -192,23 +192,24 @@ return fields;
   }
 
   validateForm() {
-    const config = this.getValidationConfig()
-      .filter(c => {
-        // En édition, l'email est disabled → pas à valider
-        if (c.id === 'email' && this.isEdit) return false;
-        return true;
-      });
-
-    let isValid = true;
-    config.forEach(fieldConfig => {
-      if (!this.validateField(fieldConfig)) {
-        isValid = false;
-      }
+  const config = this.getValidationConfig()
+    .filter(c => {
+      if (c.id === 'email' && this.isEdit) return false;
+      return true;
     });
 
-    return isValid;
-  }
+  console.log('🔍 ProfileModal.validateForm config:', config.map(c => c.id));
 
+  let isValid = true;
+  config.forEach(fieldConfig => {
+    const result = this.validateField(fieldConfig);
+    console.log(`  → field "${fieldConfig.id}" (${fieldConfig.validation}): ${result ? '✅' : '❌'}`);
+    if (!result) isValid = false;
+  });
+
+  console.log('🔍 validateForm résultat:', isValid);
+  return isValid;
+}
   applyRoleColorToHeader() {
     const headerEl = this.modalElement?.querySelector('.banner-photo-container');
     if (!headerEl) return;
@@ -284,28 +285,31 @@ return fields;
           </h4>
           
           ${this.createFormField({
-            id: 'current_password',
-            type: 'password',
-            value: '',
-            placeholder: 'Mot de passe actuel',
-            validation: 'optional'
-          })}
-          
-          ${this.createFormField({
-            id: 'new_password',
-            type: 'password',
-            value: '',
-            placeholder: 'Nouveau mot de passe',
-            validation: 'optional'
-          })}
-          
-          ${this.createFormField({
-            id: 'confirm_password',
-            type: 'password',
-            value: '',
-            placeholder: 'Confirmer le nouveau mot de passe',
-            validation: 'optional'
-          })}
+  id: 'current_password',
+  type: 'password',
+  value: '',
+  placeholder: 'Mot de passe actuel',
+  validation: 'optional',
+  autocomplete: 'new-password'
+})}
+
+${this.createFormField({
+  id: 'new_password',
+  type: 'password',
+  value: '',
+  placeholder: 'Nouveau mot de passe',
+  validation: 'optional',
+  autocomplete: 'new-password'
+})}
+
+${this.createFormField({
+  id: 'confirm_password',
+  type: 'password',
+  value: '',
+  placeholder: 'Confirmer le nouveau mot de passe',
+  validation: 'optional',
+  autocomplete: 'new-password'
+})}
         </div>
       </div>
     `;
@@ -317,7 +321,7 @@ return fields;
   prepareDataBeforeSave(data) {
     const prepared = {
   displayName: data.displayName.trim(),
-  email: data.email.trim(),
+  email: this.isEdit ? (this.currentData?.email || '') : data.email.trim(),
   telephone: data.telephone?.trim() || null
 };
 
@@ -329,27 +333,28 @@ return fields;
 
     // ORGA: gestion du changement de password
     if (this.isEditingOwnAccount) {
-      const currentPass = data.current_password?.trim();
-      const newPass = data.new_password?.trim();
-      const confirmPass = data.confirm_password?.trim();
+  const currentPass = document.getElementById(`${this.modalId}-current_password`)?.value?.trim() || '';
+  const newPass = document.getElementById(`${this.modalId}-new_password`)?.value?.trim() || '';
+  const confirmPass = document.getElementById(`${this.modalId}-confirm_password`)?.value?.trim() || '';
 
-      if (newPass || confirmPass || currentPass) {
-        // Au moins un champ rempli
-        if (!currentPass || !newPass || !confirmPass) {
-          throw new Error('Tous les champs de mot de passe sont obligatoires');
-        }
-        if (newPass !== confirmPass) {
-          throw new Error('Les mots de passe ne correspondent pas');
-        }
-        if (newPass.length < 8) {
-          throw new Error('Le mot de passe doit avoir au moins 8 caractères');
-        }
-        prepared.changePassword = {
-          currentPassword: currentPass,
-          newPassword: newPass
-        };
-      }
+  console.log('🔑 Password fields (par ID):', { currentPass: !!currentPass, newPass: !!newPass, confirmPass: !!confirmPass });
+
+  if (currentPass || newPass || confirmPass) {
+    if (!currentPass || !newPass || !confirmPass) {
+      throw new Error('Tous les champs de mot de passe sont obligatoires');
     }
+    if (newPass !== confirmPass) {
+      throw new Error('Les mots de passe ne correspondent pas');
+    }
+    if (newPass.length < 8) {
+      throw new Error('Le mot de passe doit avoir au moins 8 caractères');
+    }
+    prepared.changePassword = {
+      currentPassword: currentPass,
+      newPassword: newPass
+    };
+  }
+}
 
     return prepared;
   }
