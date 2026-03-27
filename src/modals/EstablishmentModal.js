@@ -103,7 +103,7 @@ setupAddressAutocomplete() {
     
     console.log(`👥 Organisateurs filtrés: ${this.organizersForAdmin.length}`);
     if (this.organizersForAdmin.length > 0) {
-      console.log('Orgas trouvés:', this.organizersForAdmin.map(o => `${o.prenom} ${o.nom} (${o.email})`));
+      console.log('Orgas trouvés:', this.organizersForAdmin.map(o => `${o.displayName || o.email} (${o.email})`));
     }
   } catch (error) {
     console.error('Erreur chargement organisateurs:', error);
