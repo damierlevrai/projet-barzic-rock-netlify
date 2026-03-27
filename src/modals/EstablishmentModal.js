@@ -285,12 +285,18 @@ close() {
    * 🔄 PREPARE DATA BEFORE SAVE - Transformer FormData
    */
   prepareDataBeforeSave(data) {
-  let ownerId = this.getCurrentUser().id;
+  let ownerId = this.isEdit
+    ? (this.currentData.owner_id || this.getCurrentUser().id)
+    : this.getCurrentUser().id;
 
-  // ADMIN ASSIGN ORGANISATEUR
-  if (this.isAdminContext && data.owner_for_organizer) {
-  ownerId = data.owner_for_organizer;
-}
+  if (this.isAdminContext) {
+    // Lire directement le select du DOM (champ custom non collecté par BaseModal)
+    const ownerSelect = document.getElementById(`${this.modalId}-owner_for_organizer`);
+    const selectedOwnerId = ownerSelect?.value;
+    if (selectedOwnerId) {
+      ownerId = selectedOwnerId;
+    }
+  }
 
     return {
     nom: data.nom.trim(),

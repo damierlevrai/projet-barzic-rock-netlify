@@ -225,11 +225,13 @@ export class BaseModal {
         console.log(`🎭 ${this.constructor.name} - ${this.isEdit ? 'Édition' : 'Création'}`);
 
         const html = this.getHTML();
-        this.show(html);
+this.show(html);
 
-        if (this.allowPhotoUpload && this.existingPhotoId) {
-        await this.loadExistingPhoto();
-        }
+if (this.allowPhotoUpload && this.existingPhotoId) {
+    // Laisser le DOM s'insérer avant de charger la photo
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    await this.loadExistingPhoto();
+}
 
         this.setupFormValidation();
         this.attachFormListener();

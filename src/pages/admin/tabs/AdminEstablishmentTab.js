@@ -115,7 +115,16 @@ class AdminEstablishmentTab {
         const originInfo = this.getItemOriginInfo(estab);
         const photoUrl = await this.getPhotoUrl(estab);
         const createdDate = estab.created_at ? 
-            new Date(estab.created_at).toLocaleDateString('fr-FR') : 'N/A';
+    new Date(estab.created_at).toLocaleDateString('fr-FR') : 'N/A';
+
+// Résoudre le propriétaire
+let ownerLabel = '—';
+if (estab.owner_id) {
+    try {
+        const owner = await IndexedDBManager.get('profiles', estab.owner_id);
+        ownerLabel = owner?.displayName || owner?.email || estab.owner_id.substring(0, 8) + '…';
+    } catch (e) { /* silencieux */ }
+}
         
         // Distance badge
         let distanceHTML = '';
@@ -157,11 +166,15 @@ class AdminEstablishmentTab {
                     </div>
                     
                     <div class="card-details">
-                        <div class="detail-item">
-                            <span class="detail-label">Créée:</span>
-                            <span class="detail-value">${createdDate}</span>
-                        </div>
-                    </div>
+    <div class="detail-item">
+        <span class="detail-label">Créé le:</span>
+        <span class="detail-value">${createdDate}</span>
+    </div>
+    <div class="detail-item">
+        <span class="detail-label">Propriétaire:</span>
+        <span class="detail-value detail-owner">${ownerLabel}</span>
+    </div>
+</div>
                 </div>
 
                 <!-- FAB Delete -->
@@ -389,13 +402,72 @@ class AdminEstablishmentTab {
             
             const card = document.querySelector(`[data-id="${e.detail.itemId}"]`);
             if (card) {
-                // Mettre à jour juste le titre et l'adresse (comme AccountTab)
+                // 1. Nom
                 const titleEl = card.querySelector('.card-title');
-                const addressEl = card.querySelector('.card-address');
-                
                 if (titleEl) titleEl.textContent = updated.nom || 'Sans nom';
-                if (addressEl) addressEl.textContent = updated.adresse || updated.adresse_complete || 'Adresse non renseignée';
-                
+
+                // 2. Type
+                const typeEl = card.querySelector('.card-type');
+                if (typeEl) typeEl.textContent = updated.type || '–';
+
+                // 3. Adresse
+                const addressEl = card.querySelector('.card-address');
+                if (addressEl) addressEl.textContent = updated.adresse || 'Adresse non renseignée';
+
+                // 4. Meta (tel, email, website)
+                const metaEl = card.querySelector('.card-meta');
+                if (metaEl) {
+                    metaEl.innerHTML = `
+                        ${updated.telephone ? `<span class="meta-item">📱 ${this.formatPhone(updated.telephone)}</span>` : ''}
+                        ${updated.email ? `<span class="meta-item">📧 Email</span>` : ''}
+                        ${updated.website ? `<span class="meta-item">🌐 Site web</span>` : ''}
+                    `;
+                }
+
+                // 5. Propriétaire
+                const ownerEl = card.querySelector('.detail-owner');
+                if (ownerEl && updated.owner_id) {
+                    try {
+                        const owner = await IndexedDBManager.get('profiles', updated.owner_id);
+                        ownerEl.textContent = owner?.displayName || owner?.email || '—';
+                    } catch (_) { /* silencieux */ }
+                }
+
+                // 6. Photo
+                const photoSection = card.querySelector('.card-photo-section');
+                if (photoSection && updated.photo_id) {
+                    try {
+                        const photoData = await IndexedDBManager.get('photos', updated.photo_id);
+                        let photoUrl = null;
+
+                        if (photoData?.blob instanceof Blob) {
+                            const oldUrl = this.photoObjectUrls.get(updated.photo_id);
+                            if (oldUrl) URL.revokeObjectURL(oldUrl);
+                            photoUrl = URL.createObjectURL(photoData.blob);
+                            this.photoObjectUrls.set(updated.photo_id, photoUrl);
+                        } else if (updated.photo_url) {
+                            photoUrl = updated.photo_url;
+                        }
+
+                        if (photoUrl) {
+                            const existingImg = photoSection.querySelector('.card-photo');
+                            if (existingImg) {
+                                existingImg.src = photoUrl;
+                            } else {
+                                const placeholder = photoSection.querySelector('.card-photo-placeholder');
+                                if (placeholder) placeholder.remove();
+                                const statusDot = photoSection.querySelector('.card-status-dot');
+                                const img = document.createElement('img');
+                                img.src = photoUrl;
+                                img.alt = updated.nom || '';
+                                img.className = 'card-photo';
+                                img.loading = 'lazy';
+                                photoSection.insertBefore(img, statusDot);
+                            }
+                        }
+                    } catch (_) { /* silencieux */ }
+                }
+
                 console.log('✅ Card mise à jour immédiatement');
             }
         }
@@ -403,6 +475,8 @@ class AdminEstablishmentTab {
         console.error('❌ Erreur itemUpdated:', error);
     }
 });
+
+   
 
     // Stat filters
     container.querySelectorAll('.stat-item').forEach(item => {
