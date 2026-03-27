@@ -316,15 +316,6 @@ ${this.createFormField({
   validation: 'optional',
   autocomplete: 'new-password'
 })}
-
-${this.createFormField({
-  id: 'confirm_password',
-  type: 'password',
-  value: '',
-  placeholder: 'Confirmer le nouveau mot de passe',
-  validation: 'optional',
-  autocomplete: 'new-password'
-})}
         </div>
       </div>
     `;

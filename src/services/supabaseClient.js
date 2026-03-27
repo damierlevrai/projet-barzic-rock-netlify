@@ -144,7 +144,7 @@ return { success: true, count };
             const { count: upcomingCount, error: upcomingError } = await supabase
                 .from('events')
                 .select('*', { count: 'exact', head: true })
-                .gte('event_date', today);
+                .gte('date_debut', today);
                 
             stats.upcomingEvents = upcomingError ? 0 : upcomingCount;
             

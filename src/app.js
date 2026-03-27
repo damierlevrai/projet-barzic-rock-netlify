@@ -51,7 +51,7 @@ export class BarzikApp {
 
   async testSupabase() {
     try {
-      const { data, error } = await supabase.from("event").select("id").limit(1);
+      const { data, error } = await supabase.from("events").select("id").limit(1);
       if (error) throw error;      
     } catch (error) {
       

@@ -732,10 +732,10 @@ validateForm() {
           }
         }
       } catch (photoErr) {
-        console.error('❌ Photo attachment failed:', photoErr);
-        this.showNotification('Erreur lors de la photo', 'error');
-        throw photoErr;
-      }
+  console.warn('⚠️ Photo attachment failed, sauvegarde sans photo:', photoErr.message);
+  // Ne pas bloquer — l'établissement sera sauvegardé sans photo
+  // La photo pourra être rajoutée ensuite
+}
     } else if (this.isEdit && !this.currentNewPhotoBlob) {
       prepared.photo_id = this.currentData.photo_id;
       prepared.photo_url = this.currentData.photo_url;

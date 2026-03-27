@@ -451,10 +451,7 @@ static async updatePhotoMetadata(photoHash) {
       code_postal: est.code_postal || null,
       city_normalized: est.city_normalized,
       latitude: est.latitude,
-      longitude: est.longitude,
-      location: est.longitude && est.latitude 
-        ? `POINT(${est.longitude} ${est.latitude})`
-        : null,
+      longitude: est.longitude,      
       telephone: est.telephone || null,
       email: est.email || null,
       website: est.website || null,

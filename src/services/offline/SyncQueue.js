@@ -232,7 +232,7 @@ for (const item of itemsToProcess) {  // ← CHANGER pendingItems en itemsToProc
       throw new Error('Supabase non disponible');
     }
 
-    const table = type === 'events' ? 'event' : 'establishment';
+    const table = type === 'events' ? 'events' : 'establishment';
     const supabaseData = {
       id,
       status: 'approved',
@@ -259,7 +259,7 @@ for (const item of itemsToProcess) {  // ← CHANGER pendingItems en itemsToProc
       throw new Error('Supabase non disponible');
     }
 
-    const table = type === 'events' ? 'event' : 'establishment';
+    const table = type === 'events' ? 'events' : 'establishment';
 
     const { error } = await window.supabaseInstance
       .from(table)
@@ -279,7 +279,7 @@ for (const item of itemsToProcess) {  // ← CHANGER pendingItems en itemsToProc
       throw new Error('Supabase non disponible');
     }
 
-    const table = type === 'events' ? 'event' : 'establishment';
+    const table = type === 'events' ? 'events' : 'establishment';
 
     const { error } = await window.supabaseInstance
       .from(table)
