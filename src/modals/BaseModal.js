@@ -204,6 +204,13 @@ export class BaseModal {
         return data;  // Default: pas de transformation
     }
 
+    /**
+     * Géocodage de l'adresse — à override dans les subclasses qui en ont besoin
+     */
+    async geocodeEstablishment(prepared) {
+        // Default: pas de géocodage
+    }
+
     // ============================================
     // 🎬 LIFECYCLE
     // ============================================
@@ -561,7 +568,7 @@ validateForm() {
     const banner = document.getElementById(`${this.modalId}-banner-photo`);
     if (banner && universal instanceof Blob) {
       // 🟢 SIMPLIFIÉE: Juste stocker en mémoire
-      const photoHash = await window.PhotoOrchestrator?.calculateHash(universal);
+      const photoHash = await PhotoOrchestrator?.calculateHash(universal);
       const stablePhotoId = `${photoHash.substring(0, 12)}-${Date.now()}`;
       
       this.currentNewPhotoId = stablePhotoId;
@@ -605,7 +612,7 @@ validateForm() {
   if (this.existingPhotoId) {
     try {
       // Recuperer le blob depuis IndexedDB v4
-      const photoData = await window.IndexedDBManager?.get('photos', this.existingPhotoId);
+      const photoData = await IndexedDBManager.get('photos', this.existingPhotoId);
       
       if (photoData?.blob && photoData.blob instanceof Blob) {
         photoUrl = URL.createObjectURL(photoData.blob);
@@ -702,40 +709,45 @@ validateForm() {
     prepared.id = this.isEdit ? this.currentData.id : crypto.randomUUID();
 
     if (this.allowPhotoUpload && this.currentNewPhotoBlob) {
-      try {
-        const photoResult = await window.PhotoOrchestrator.attachPhotoToItem(
-          this.currentNewPhotoBlob,
-          prepared.id,
-          this.getStoreName() === 'establishments' ? 'establishment' : 'event'
-        );
-        
-        if (photoResult) {
-          prepared.photo_hash = photoResult.photoHash;
-          prepared.photo_id = photoResult.photoIdLocal;
-          
-          const isOnline = window.NetworkStatus?.isOnline?.();
-          if (isOnline && !photoResult.reused) {
-            try {
-              const allRefs = await window.IndexedDBManager.getAll('photo_refs');
-              const photoRef = allRefs.find(ref => 
-                ref.photo_hash === photoResult.photoHash
-              );
-              
-              if (photoRef && photoRef.status === 'local') {
-                const photoUrl = await window.PhotoOrchestrator.uploadPhoto(photoRef);
-                prepared.photo_url = photoUrl;
-              }
-            } catch (uploadErr) {
-              console.warn('⚠️ Photo upload failed, continuing:', uploadErr);
-              prepared.photo_url = null;
-            }
+  try {
+    const photoResult = await PhotoOrchestrator.attachPhotoToItem(
+      this.currentNewPhotoBlob,
+      prepared.id,
+      this.getStoreName() === 'establishments' ? 'establishment' : 'event'
+    );
+    
+    if (photoResult) {
+      prepared.photo_hash = photoResult.photoHash;
+      prepared.photo_id = photoResult.photoIdLocal;
+      prepared.photo_url = null; // Sera mis à jour par upload arrière-plan
+
+      // Upload non-bloquant — fonctionne online uniquement, sinon SyncEngine retry
+      if (!photoResult.reused) {
+        const storeName = this.getStoreName();
+        const itemId = prepared.id;
+        IndexedDBManager.getAll('photo_refs').then(allRefs => {
+          const photoRef = allRefs.find(ref => ref.photo_hash === photoResult.photoHash);
+          if (photoRef && photoRef.status === 'local') {
+            PhotoOrchestrator.uploadPhoto(photoRef)
+              .then(photoUrl => {
+                if (photoUrl) {
+                  IndexedDBManager.get(storeName, itemId).then(item => {
+                    if (item) {
+                      item.photo_url = photoUrl;
+                      IndexedDBManager.put(storeName, item);
+                      console.log('✅ Photo URL mise à jour en arrière-plan');
+                    }
+                  });
+                }
+              })
+              .catch(err => console.warn('⚠️ Upload arrière-plan échoué:', err.message));
           }
-        }
-      } catch (photoErr) {
-  console.warn('⚠️ Photo attachment failed, sauvegarde sans photo:', photoErr.message);
-  // Ne pas bloquer — l'établissement sera sauvegardé sans photo
-  // La photo pourra être rajoutée ensuite
-}
+        });
+      }
+    }
+  } catch (photoErr) {
+    console.warn('⚠️ Photo attachment failed, sauvegarde sans photo:', photoErr.message);
+  }
     } else if (this.isEdit && !this.currentNewPhotoBlob) {
       prepared.photo_id = this.currentData.photo_id;
       prepared.photo_url = this.currentData.photo_url;
@@ -823,7 +835,7 @@ validateForm() {
     // Supprimer du cache IndexedDB v4
     if (oldPhotoId) {
       try {
-        await window.IndexedDBManager?.delete('photos', oldPhotoId);
+        await IndexedDBManager.delete('photos', oldPhotoId);
         console.log('[PHOTO] Ancienne photo supprimee du cache v4');
       } catch (err) {
         console.warn('[PHOTO] Erreur delete cache v4:', err);

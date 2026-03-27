@@ -256,19 +256,6 @@ static async findExistingPhotoByHash(photoHash) {
   }
 
   /**
-   * 🔍 FIND PHOTO BY HASH - Déduplication
-   */
-  static async findPhotoByHash(hash) {
-    try {
-      const allRefs = await window.IndexedDBManager.getAll('photo_refs');
-      return allRefs.find(ref => ref.photo_hash === hash) || null;
-    } catch (error) {
-      console.warn('⚠️ Find photo by hash error:', error);
-      return null;
-    }
-  }
-
-  /**
    * 🎲 GENERATE ID - Unique ID
    */
   static generateId() {

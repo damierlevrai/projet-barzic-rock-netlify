@@ -94,10 +94,10 @@ setupAddressAutocomplete() {
     })));
     
     this.organizersForAdmin = profiles.filter(p => {
-  const isOrga = p.role === 'organizer';
+  const isOrgaOrAdmin = p.role === 'organizer' || p.role === 'admin';
   const isActive = p.is_active !== false;
-  console.log(`  Checking ${p.email}: role=${p.role}, is_active=${p.is_active} → ${isOrga && isActive}`);
-  return isOrga && isActive;
+  console.log(`  Checking ${p.email}: role=${p.role}, is_active=${p.is_active} → ${isOrgaOrAdmin && isActive}`);
+  return isOrgaOrAdmin && isActive;
 });
 
     
