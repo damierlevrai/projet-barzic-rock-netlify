@@ -32,9 +32,9 @@ export class EstablishmentModal extends BaseModal {
     const user = this.getCurrentUser();
     this.isAdminContext = user?.role === 'admin';
 
-    if (this.isAdminContext && !this.isEdit) {
-      await this.loadOrganizers();
-    }
+    if (this.isAdminContext) {
+  await this.loadOrganizers();
+}
 
     console.log(`🏢 Établissement: ${this.isEdit ? 'Édition' : 'Nouveau'}`);
 
@@ -153,15 +153,28 @@ close() {
       },
 
       // ADMIN ASSIGN ORGANISATEUR
-      ...(this.isAdminContext && !this.isEdit ? [{
+      ...(this.isAdminContext ? [{
   id: 'owner_for_organizer',
-  validation: 'optional',
-  value: '',
-  placeholder: 'Attribuer à un organisateur...',
-  datalist: this.organizersForAdmin.map(o => {
-  const displayName = o.displayName || `${o.prenom || ''} ${o.nom || ''}`.trim();
-  return `<option value="${displayName} (${o.email})">${displayName} (${o.email})</option>`;
-}).join('')
+  type: 'custom',
+  renderer: () => {
+    const currentOwnerId = this.isEdit ? (data.owner_id || '') : '';
+    return `
+      <div class="modern-field-container" data-field="owner_for_organizer">
+        <label class="modern-label">👤 Propriétaire</label>
+        <div class="modern-select-field">
+          <select id="${this.modalId}-owner_for_organizer" 
+                  name="owner_for_organizer" 
+                  class="modern-field-input">
+            <option value="">-- Choisir un propriétaire --</option>
+            ${this.organizersForAdmin.map(o => {
+              const label = `${o.displayName || o.email} (${o.email})`;
+              return `<option value="${o.id}" ${o.id === currentOwnerId ? 'selected' : ''}>${label}</option>`;
+            }).join('')}
+          </select>
+        </div>
+      </div>
+    `;
+  }
 }] : []),
 
       {
@@ -276,15 +289,8 @@ close() {
 
   // ADMIN ASSIGN ORGANISATEUR
   if (this.isAdminContext && data.owner_for_organizer) {
-    const match = data.owner_for_organizer.match(/\((.*?)\)/);
-    if (match) {
-      const email = match[1];
-      const organizer = this.organizersForAdmin.find(o => o.email === email);
-      if (organizer) {
-        ownerId = organizer.id;
-      }
-    }
-  }
+  ownerId = data.owner_for_organizer;
+}
 
     return {
     nom: data.nom.trim(),
