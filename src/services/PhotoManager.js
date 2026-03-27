@@ -149,7 +149,7 @@ export class PhotoManager {
     // Tenter WebP
     if (this.options.preferWebP) {
       return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => reject(new Error('toBlob timeout')), 10000);
+        const timeoutId = setTimeout(() => reject(new Error('toBlob timeout')), 30000);
 
         canvas.toBlob(
           (blob) => {
@@ -199,7 +199,7 @@ export class PhotoManager {
 
     // Fallback direct JPEG
     return new Promise((resolve, reject) => {
-      const timeoutId = setTimeout(() => reject(new Error('toBlob timeout')), 10000);
+      const timeoutId = setTimeout(() => reject(new Error('toBlob timeout')), 30000);
 
       canvas.toBlob(
         (blob) => {
