@@ -157,13 +157,19 @@ if (estab.owner_id) {
                 <div class="card-info-section-centered">
                     <h3 class="card-title">${estab.nom || 'Sans nom'}</h3>
                     <p class="card-type">${estab.type || '–'}</p>
-                    <p class="card-address">${estab.adresse || estab.adresse_complete || 'Adresse non renseignée'}</p>
-                    
-                    <div class="card-meta">
-                        ${estab.telephone ? `<span class="meta-item">📱 ${this.formatPhone(estab.telephone)}</span>` : ''}
-                        ${estab.email ? `<span class="meta-item">📧 Email</span>` : ''}
-                        ${estab.website ? `<span class="meta-item">🌐 Site web</span>` : ''}
-                    </div>
+                    <p class="card-address">${[estab.adresse, estab.code_postal, estab.ville].filter(Boolean).join(', ') || 'Adresse non renseignée'}</p>
+
+<div class="card-meta">
+    ${estab.telephone ? `<span class="meta-item">📱 ${this.formatPhone(estab.telephone)}</span>` : ''}
+    ${estab.email ? `<span class="meta-item">📧 ${estab.email}</span>` : ''}
+    ${estab.website ? `<span class="meta-item">🌐 ${estab.website}</span>` : ''}
+</div>
+
+
+<div class="card-socials">
+    ${estab.facebook_url ? `<span class="meta-item">📘 ${estab.facebook_url}</span>` : ''}
+    ${estab.instagram_url ? `<span class="meta-item">📸 ${estab.instagram_url}</span>` : ''}
+</div>
                     
                     <div class="card-details">
     <div class="detail-item">
@@ -412,17 +418,19 @@ if (estab.owner_id) {
 
                 // 3. Adresse
                 const addressEl = card.querySelector('.card-address');
-                if (addressEl) addressEl.textContent = updated.adresse || 'Adresse non renseignée';
+                if (addressEl) addressEl.textContent = [updated.adresse, updated.code_postal, updated.ville].filter(Boolean).join(', ') || 'Adresse non renseignée';
 
                 // 4. Meta (tel, email, website)
                 const metaEl = card.querySelector('.card-meta');
                 if (metaEl) {
                     metaEl.innerHTML = `
-                        ${updated.telephone ? `<span class="meta-item">📱 ${this.formatPhone(updated.telephone)}</span>` : ''}
-                        ${updated.email ? `<span class="meta-item">📧 Email</span>` : ''}
-                        ${updated.website ? `<span class="meta-item">🌐 Site web</span>` : ''}
-                    `;
+    ${updated.telephone ? `<span class="meta-item">📱 ${this.formatPhone(updated.telephone)}</span>` : ''}
+    ${updated.email ? `<span class="meta-item">📧 ${updated.email}</span>` : ''}
+    ${updated.website ? `<span class="meta-item">🌐 ${updated.website}</span>` : ''}
+`;
                 }
+                
+                
 
                 // 5. Propriétaire
                 const ownerEl = card.querySelector('.detail-owner');

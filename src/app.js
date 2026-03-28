@@ -75,8 +75,14 @@ export class BarzikApp {
 
   setupAuthListener() {
     Auth.onAuthStateChange((event) => {
-        // ⏸️ Ne pas rediriger si une modal est ouverte
         if (event === "SIGNED_IN") {
+            // Ne pas rediriger si déjà sur la bonne page
+            const user = Auth.getCurrentUser();
+            const targetPath = user?.role === 'admin' ? '/admin' 
+                : user?.role === 'organizer' ? '/orga' 
+                : '/public';
+            if (window.location.pathname === targetPath) return;
+
             const modalOpen = document.querySelector('[id*="-modal"].modal-open');
             if (modalOpen) {
                 console.log('Modal ouverte, ignorer redirection');

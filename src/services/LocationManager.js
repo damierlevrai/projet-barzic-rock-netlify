@@ -115,10 +115,10 @@ class LocationManager {
     }
 
     const options = {
-      enableHighAccuracy: false,
-      timeout: 10000,
-      maximumAge: 0
-    };
+  enableHighAccuracy: false,
+  timeout: 15000,
+  maximumAge: 300000  // Accepter une position de moins de 5min
+};
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -261,19 +261,22 @@ static async setTemporaryLocation(cityName) {
       };
 
       console.log('🌍 Position temporaire définie (memory):', city.name);
-      
-      // ✅ AJOUTER : Invalider cache pour forcer refresh
-      if (window.TabCacheManager) {
-        window.TabCacheManager.invalidate('events');
-        window.TabCacheManager.invalidate('establishments');
-      }
-      
-      // ✅ Trigger sync pour récupérer les events de cette ville
-      if (window.SyncOrchestrator) {
-        window.SyncOrchestrator.scheduleSync('city-changed', 500);
-      }
-      
-      return this.temporaryLocation;
+
+// Persister en IndexedDB pour admin/orga
+const user = window.Auth?.getCurrentUser?.();
+if (user?.role === 'admin' || user?.role === 'organizer') {
+    await this.savePrimaryLocation({
+        ...this.temporaryLocation,
+        source: 'manual'
+    });
+    this.primaryLocation = { ...this.temporaryLocation };
+    console.log('💾 Position manuelle persistée pour admin/orga');
+}
+
+// Invalider cache...
+// Trigger sync...
+
+return this.temporaryLocation;
     } catch (error) {
       console.error('❌ Set temporary location error:', error);
       throw error;
@@ -435,7 +438,7 @@ static async getCurrentLocationCity() {
    */
   static async getDistanceTo(targetLat, targetLon) {
     try {
-      const userLocation = await this.getUserLocation();
+      const userLocation = await window.LocationManager?.getUserLocation().catch(() => null);
 
       const distance = window.DistanceCalculator?.haversine(
         userLocation.latitude,

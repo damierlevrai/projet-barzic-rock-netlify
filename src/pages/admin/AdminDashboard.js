@@ -10,6 +10,7 @@ import TabCacheManager from '../../services/TabCacheManager.js';
 import PhotoOrchestrator from '../../services/PhotoOrchestrator.js';
 import SyncOrchestrator from '../../services/SyncOrchestrator.js';
 import DashboardIcons from '../../components/dashboard-icons.js';
+import LocationManager from '../../services/LocationManager.js';
 
 // Imports Modals
 import EstablishmentModal from "../../modals/EstablishmentModal.js";
@@ -484,13 +485,98 @@ async handleLocationGPS() {
   }
 
   setupNavigationListeners() {
+    console.log('🔧 setupNavigationListeners appelé');
+
+    // Nav tabs
     document.querySelectorAll(".nav-tab-responsive").forEach(tab => {
-      tab.addEventListener("click", e => {
-        e.preventDefault();
-        this.switchTab(tab.dataset.tab);
-      });
+        tab.addEventListener("click", e => {
+            e.preventDefault();
+            this.switchTab(tab.dataset.tab);
+        });
     });
-  }
+
+    // City search - avec protection double attachement
+    const citySearchInput = document.getElementById("city-search");
+    if (citySearchInput && !citySearchInput.dataset.listenerAttached) {
+        citySearchInput.dataset.listenerAttached = 'true';
+        let searchTimeout;
+
+        citySearchInput.addEventListener("input", async (e) => {
+            const query = e.target.value.trim();
+            if (query.length < 2) {
+                document.getElementById("city-suggestions").innerHTML = '';
+                return;
+            }
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                try {
+                    console.log('🔍 Recherche ville:', query);
+                    const cities = await window.GeocodingService?.searchCities(query);
+                    if (cities && cities.length > 0) {
+                        const datalist = document.getElementById("city-suggestions");
+                        datalist.innerHTML = cities
+                            .slice(0, 5)
+                            .map(city => `<option value="${city.name}"></option>`)
+                            .join('');
+                        console.log('✅ Suggestions:', cities.map(c => c.name));
+                    }
+                } catch (error) {
+                    console.error('❌ Erreur recherche ville:', error);
+                }
+            }, 300);
+        });
+
+        citySearchInput.addEventListener("change", async (e) => {
+            const selectedCity = e.target.value.trim();
+            if (!selectedCity) return;
+            try {
+                console.log('🌍 Sélection ville:', selectedCity);
+                const location = await window.LocationManager?.setTemporaryLocation(selectedCity);
+                if (location) {
+                    this.showNotification(`📍 ${location.city}`, 'success');
+                    citySearchInput.value = '';
+                    await this.updateLocationDisplay();
+                    await this.triggerSync();
+                    if (this.activeTabInstance) {
+                        this.activeTabInstance.refreshView();
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Erreur sélection ville:', error);
+                this.showNotification(`Ville non trouvée: ${error.message}`, 'error');
+                citySearchInput.value = '';
+            }
+        });
+    }
+
+    // Bouton GPS
+    const locationBtn = document.getElementById("location-btn");
+    if (locationBtn && !locationBtn.dataset.listenerAttached) {
+        locationBtn.dataset.listenerAttached = 'true';
+        locationBtn.addEventListener("click", async () => {
+            const cityInput = document.getElementById("city-search");
+            const selectedCity = cityInput?.value?.trim();
+            if (selectedCity) {
+                try {
+                    const location = await window.LocationManager?.setTemporaryLocation(selectedCity);
+                    if (location) {
+                        this.showNotification(`📍 ${location.city}`, 'success');
+                        cityInput.value = '';
+                        await this.updateLocationDisplay();
+                        await this.triggerSync();
+                        if (this.activeTabInstance) {
+                            this.activeTabInstance.refreshView();
+                        }
+                    }
+                } catch (error) {
+                    this.showNotification(`Ville non trouvée: ${error.message}`, 'error');
+                }
+            } else {
+                await this.handleLocationGPS();
+            }
+        });
+    }
+}
   
   switchTab(tabName) {
     this.activeTab = tabName;
